@@ -149,7 +149,7 @@ class BlueZGattApplication(ServiceInterface):
         iface: ProxyInterface = adapter.get_interface(defs.GATT_MANAGER_INTERFACE)
         await iface.call_unregister_application(self.path)  # type: ignore
 
-    async def start_advertising(self, adapter: ProxyObject):
+    async def start_advertising(self, adapter: ProxyObject, company_id: int, manufacturer_data: bytes):
         """
         Start Advertising the application
 
@@ -167,6 +167,10 @@ class BlueZGattApplication(ServiceInterface):
 
         # Only add the first UUID
         advertisement._service_uuids.append(self.services[0].UUID)
+
+        if manufacturer_data:
+            md = {company_id: Variant('ay',manufacturer_data)}
+            advertisement._manufacturer_data = md
 
         self.bus.export(advertisement.path, advertisement)
 

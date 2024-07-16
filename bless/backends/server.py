@@ -71,6 +71,18 @@ class BaseBlessServer(abc.ABC):
         raise NotImplementedError()
 
     @abc.abstractmethod
+    async def set_manufacturer_data(self, data: bytes):
+        """
+        Set Manufacturer Data
+
+        Returns
+        -------
+        bool
+            Whether the server started successfully
+        """
+        raise NotImplementedError()
+
+    @abc.abstractmethod
     async def is_connected(self) -> bool:
         """
         Determine whether there are any connected peripheral devices

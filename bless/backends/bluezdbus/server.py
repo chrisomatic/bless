@@ -42,6 +42,8 @@ class BlessServerBlueZDBus(BaseBlessServer):
         super(BlessServerBlueZDBus, self).__init__(loop=loop, **kwargs)
         self.name: str = name
         self._adapter: Optional[str] = kwargs.get("adapter", None)
+        self.company_id = 0
+        self.manufacturer_data = b''
 
         self.setup_task: asyncio.Task = self.loop.create_task(self.setup())
 
@@ -69,6 +71,10 @@ class BlessServerBlueZDBus(BaseBlessServer):
             raise Exception("Could not locate bluetooth adapter")
         self.adapter: ProxyObject = cast(ProxyObject, potential_adapter)
 
+    async def set_manufacturer_data(self, company_id: int, data: bytes):
+        self.company_id = company_id
+        self.manufacturer_data = data
+
     async def start(self, **kwargs) -> bool:
         """
         Start the server
@@ -87,7 +93,7 @@ class BlessServerBlueZDBus(BaseBlessServer):
         await self.app.register(self.adapter)
 
         # advertise
-        await self.app.start_advertising(self.adapter)
+        await self.app.start_advertising(self.adapter, self.company_id, self.manufacturer_data)
 
         return True
 
