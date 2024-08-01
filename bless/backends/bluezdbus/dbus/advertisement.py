@@ -53,6 +53,7 @@ class BlueZLEAdvertisement(ServiceInterface):
         self._manufacturer_data: Dict = {}
         self._solicit_uuids: List[str] = [""]
         self._service_data: Dict = {}
+        self._data: Dict = {}
 
         # 3 options below are classified as Experimental in BlueZ and really
         # work only: - when BlueZ is compiled with such option (usually it is)
@@ -67,7 +68,6 @@ class BlueZLEAdvertisement(ServiceInterface):
 
         self._local_name = app.app_name
 
-        self.data = None
         super(BlueZLEAdvertisement, self).__init__(self.interface_name)
 
     @method()
@@ -113,6 +113,14 @@ class BlueZLEAdvertisement(ServiceInterface):
     @ServiceData.setter  # type: ignore # noqa: F722
     def ServiceData(self, data: "a{sv}"):  # type: ignore # noqa: F821 F722 N802
         self._service_data = data
+
+    @dbus_property()  # noqa: F722
+    def Data(self) -> "a{yv}":  # type: ignore # noqa: F821 F722 N802
+        return self._data
+
+    @Data.setter  # type: ignore # noqa: F722
+    def Data(self, data: "a{yv}"):  # type: ignore # noqa: F821 F722 N802
+        self._data = data
 
     # @dbus_property()
     # def Includes(self) -> "as": # type: ignore # noqa: F821

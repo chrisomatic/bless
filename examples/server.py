@@ -6,6 +6,8 @@ import logging
 import asyncio
 import threading
 
+sys.path.append('/home/chris/git/bless')
+
 from typing import Any, Union
 
 from bless import (  # type: ignore

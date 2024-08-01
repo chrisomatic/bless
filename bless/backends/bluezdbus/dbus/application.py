@@ -163,8 +163,10 @@ class BlueZGattApplication(ServiceInterface):
         advertisement: BlueZLEAdvertisement = BlueZLEAdvertisement(
             Type.PERIPHERAL, len(self.advertisements) + 1, self
         )
+
         self.advertisements.append(advertisement)
 
+        
         # Only add the first UUID
         advertisement._service_uuids.append(self.services[0].UUID)
 
@@ -172,7 +174,13 @@ class BlueZGattApplication(ServiceInterface):
             md = {company_id: Variant('ay',manufacturer_data)}
             advertisement._manufacturer_data = md
 
+        d = {0x01: Variant('ay', bytes([0x06]))}
+        advertisement._data = d
+
         self.bus.export(advertisement.path, advertisement)
+
+        print("adv path")
+        print(advertisement._data)
 
         iface: ProxyInterface = adapter.get_interface("org.bluez.LEAdvertisingManager1")
         await iface.call_register_advertisement(advertisement.path, {})  # type: ignore
